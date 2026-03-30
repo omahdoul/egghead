@@ -534,16 +534,10 @@
   }
 
   .carousel-slide {
-    opacity: 0;
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
+    display: none;
   }
   .carousel-slide.active {
-    opacity: 1;
-    position: relative;
-    pointer-events: auto;
+    display: block;
   }
 
   .carousel > div:first-child {
@@ -551,9 +545,10 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    position: relative;
-    min-height: 180px;
+    min-height: 200px;
   }
+
+  @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
@@ -789,7 +784,7 @@
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <div class="logo">Egg<span>H</span></div>
+    <a href="#" style="display:flex; align-items:center;"><img src="logo.png" alt="EggH" style="height:48px; width:auto;"></a>
     <ul class="nav-links">
       <li><a href="#how">Comment ça marche</a></li>
       <li><a href="#offres">Offres</a></li>
@@ -950,7 +945,7 @@
         <p class="vision-text">EggH existe pour changer ça. En apportant une expertise DSI senior à des structures qui n'ont pas les moyens ou la taille pour recruter ce profil en interne.</p>
         <p class="vision-text">On n'est pas une ESN. On n'est pas un cabinet de conseil. On est votre DSI, avec pour seul objectif de servir vos intérêts.</p>
       </div>
-      <div class="carousel fade-up delay-2">
+      <div class="carousel" id="mainCarousel">
         <div>
           <div class="carousel-slide active">
             <div class="carousel-quote">On gérait l'IT en mode pompier depuis des années. Aucune stratégie, que des urgences. Le sujet ERP traînait depuis deux ans sans avancer.</div>
@@ -1052,7 +1047,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="logo" style="font-size:18px">Egg<span>H</span></div>
+    <img src="logo.png" alt="EggH" style="height:36px; width:auto;">
     <p>© 2026 EggH. France.</p>
   </div>
 </footer>
@@ -1082,10 +1077,12 @@
 
   // Carousel
   (function() {
-    var current = 0;
-    var slides = document.querySelectorAll('.carousel-slide');
-    var dots = document.querySelectorAll('.carousel-dot');
+    var carousel = document.getElementById('mainCarousel');
+    if (!carousel) return;
+    var slides = carousel.querySelectorAll('.carousel-slide');
+    var dots = carousel.querySelectorAll('.carousel-dot');
     if (!slides.length) return;
+    var current = 0;
 
     function goTo(n) {
       slides[current].classList.remove('active');
