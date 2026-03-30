@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EggH — DSI as a Service</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Mulish:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg2: #111111;
+    --bg3: #181818;
+    --border: rgba(255,255,255,0.08);
+    --text: #ede9e3;
+    --muted: #7a7672;
+    --accent: #d4c9b8;
+    --accent2: #8ca3b8;
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Mulish', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  h1, h2, h3, h4, h5 { font-family: 'DM Serif Display', serif; line-height: 1.1; }
+
+  a { color: inherit; text-decoration: none; }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 0;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s;
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 14px;
+    color: var(--muted);
+    transition: color 0.2s;
+    font-weight: 500;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-family: 'Mulish', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #080808;
+  }
+  .btn-primary:hover {
+    background: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 32px rgba(212,201,184,0.15);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-outline:hover {
+    background: var(--bg3);
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.18;
+    z-index: 0;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.4) 0%, rgba(10,10,10,0.7) 100%);
+    z-index: 1;
+  }
+
+  .hero > .container {
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(212,201,184,0.07) 0%, transparent 65%);
+    top: -100px; left: -150px;
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(140,163,184,0.06) 0%, transparent 65%);
+    bottom: -50px; right: -100px;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    width: fit-content;
+    background: var(--bg2);
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .hero h1 {
+    font-size: clamp(44px, 7vw, 88px);
+    font-weight: 800;
+    letter-spacing: -3px;
+    max-width: 820px;
+    line-height: 1.0;
+    margin-bottom: 28px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 500px;
+    margin-bottom: 44px;
+    line-height: 1.65;
+  }
+
+  .hero-ctas {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 80px;
+    padding-top: 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label { font-size: 13px; color: var(--muted); }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 100px 0; }
+
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .section-tag::before {
+    content: '';
+    display: block;
+    width: 20px; height: 1px;
+    background: var(--accent);
+  }
+
+  .section-title {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    line-height: 1.05;
+  }
+  .section-sub {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.65;
+  }
+
+  /* ── HOW IT WORKS ── */
+  #how { background: var(--bg2); }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .step-card {
+    padding: 40px 36px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    position: relative;
+    transition: background 0.2s;
+  }
+  .step-card:last-child { border-right: none; }
+  .step-card:hover { background: var(--bg3); }
+
+  .step-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 28px;
+  }
+
+  .step-icon {
+    font-size: 28px;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .step-card h3 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+  }
+
+  .step-card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── OFFRES ── */
+  #offres { background: var(--bg); }
+
+  .offers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .offer-card {
+    padding: 36px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg2);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .offer-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(212,201,184,0.04) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .offer-card:hover { border-color: rgba(212,201,184,0.25); transform: translateY(-2px); }
+  .offer-card:hover::before { opacity: 1; }
+
+  .offer-card.featured {
+    border-color: rgba(212,201,184,0.3);
+    background: linear-gradient(135deg, rgba(212,201,184,0.06) 0%, var(--bg2) 60%);
+  }
+
+  .offer-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--accent);
+    color: #080808;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+  }
+
+  .offer-name {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .offer-desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.6;
+    min-height: 60px;
+  }
+
+  .offer-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .offer-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: rgba(240,240,238,0.8);
+  }
+
+  .offer-features li::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── WHY ── */
+  #why { background: var(--bg2); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 60px;
+  }
+
+  .why-card {
+    padding: 32px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    transition: border-color 0.2s;
+  }
+  .why-card:hover { border-color: rgba(255,255,255,0.12); }
+
+  .why-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 10px;
+    margin-top: 16px;
+  }
+
+  .why-card p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .why-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(212,201,184,0.08);
+    border: 1px solid rgba(212,201,184,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  /* ── VISION ── */
+  #vision { background: var(--bg); }
+
+  .vision-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: stretch;
+  }
+
+  .vision-quote {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 600;
+    letter-spacing: -1px;
+    line-height: 1.3;
+    margin-bottom: 32px;
+  }
+  .vision-quote em { color: var(--accent); font-style: italic; }
+
+  .vision-text { font-size: 15px; color: var(--muted); line-height: 1.75; margin-bottom: 16px; }
+
+  .vision-visual {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .vision-visual::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,201,184,0.1), transparent 70%);
+  }
+
+  /* ── CAROUSEL TESTIMONIALS ── */
+  .carousel {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    min-height: unset;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .carousel::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,201,184,0.1), transparent 70%);
+    pointer-events: none;
+  }
+
+  .carousel-slide {
+    display: none;
+    animation: fadeIn 0.4s ease;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+  .carousel-slide.active { display: flex; }
+
+  .carousel > div:first-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .carousel-quote {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 24px;
+    font-style: italic;
+    text-align: center;
+  }
+  .carousel-quote::before { content: '"'; color: var(--accent); font-size: 28px; line-height: 0; vertical-align: -10px; margin-right: 4px; }
+  .carousel-quote::after { content: '"'; color: var(--accent); font-size: 28px; line-height: 0; vertical-align: -10px; margin-left: 4px; }
+
+  .carousel-author {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    align-items: center;
+  }
+  .carousel-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .carousel-role {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+
+  .carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .carousel-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+    border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .carousel-dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    width: 20px;
+    border-radius: 3px;
+  }
+
+  .vm-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .vm-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 1.5s ease;
+  }
+  .vm-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ── FAQ ── */
+  #faq { background: var(--bg2); }
+
+  .faq-list {
+    margin-top: 60px;
+    max-width: 720px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .faq-item:last-child { border-bottom: none; }
+
+  .faq-q {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+    padding: 28px 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: background 0.2s;
+    letter-spacing: -0.2px;
+    min-height: 72px;
+  }
+  .faq-q:hover { background: var(--bg3); }
+
+  .faq-icon {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+
+  .faq-item.open .faq-icon {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #080808;
+    transform: rotate(45deg);
+  }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.2s;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.75;
+    padding: 0 28px;
+  }
+  .faq-item.open .faq-a {
+    max-height: 300px;
+    padding: 0 28px 24px;
+  }
+
+  /* ── CTA ── */
+  #contact {
+    background: var(--bg);
+    text-align: center;
+  }
+
+  .cta-box {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 80px 60px;
+    background: var(--bg2);
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(212,201,184,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-box h2 {
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+  }
+  .cta-box p {
+    color: var(--muted);
+    font-size: 17px;
+    margin-bottom: 40px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-inner p { font-size: 13px; color: var(--muted); }
+
+  /* ── ANIMATIONS ── */
+  .fade-up {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-up.hidden {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+  .delay-4 { transition-delay: 0.4s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .steps-grid, .offers-grid, .why-grid { grid-template-columns: 1fr; }
+    .vision-inner { grid-template-columns: 1fr; gap: 40px; }
+    .hero-stats { flex-wrap: wrap; gap: 28px; }
+    .cta-box { padding: 48px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">Egg<span>H</span></div>
+    <ul class="nav-links">
+      <li><a href="#how">Comment ça marche</a></li>
+      <li><a href="#offres">Offres</a></li>
+      <li><a href="#why">Pourquoi EggH</a></li>
+      <li><a href="#vision">Notre conviction</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="https://calendly.com/eggh" class="btn btn-primary">Prendre contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="container">
+    <div class="hero-badge fade-up"><span class="dot"></span> La DSI pour PMEs &amp; ETIs</div>
+    <h1 class="fade-up delay-1">Votre département IT,<br><em>clé en main.</em></h1>
+    <p class="hero-sub fade-up delay-2">La rigueur d'un grand groupe, au service de votre croissance. À coût maîtrisé.</p>
+    <div class="hero-ctas fade-up delay-3">
+      <a href="https://calendly.com/eggh" target="_blank" class="btn btn-primary">Réserver un appel ↗</a>
+      <a href="#how" class="btn btn-outline">Découvrir l'offre</a>
+    </div>
+    <div class="hero-stats fade-up delay-4">
+      <div>
+        <div class="stat-num">Une<span> plateforme dédiée</span></div>
+        <div class="stat-label">Votre IT à portée de main, à tout moment</div>
+      </div>
+      <div>
+        <div class="stat-num">Un<span> interlocuteur unique</span></div>
+        <div class="stat-label">Issus des meilleures institutions et cabinets</div>
+      </div>
+      <div>
+        <div class="stat-num">Un<span> coût prévisible</span></div>
+        <div class="stat-label">Abonnement fixe, modulable selon vos besoins</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-tag fade-up">Comment ça marche</div>
+    <h2 class="section-title fade-up">Trois étapes pour reprendre<br>le contrôle de votre IT.</h2>
+    <p class="section-sub fade-up">Un process éprouvé, adapté à votre réalité.</p>
+    <div class="steps-grid">
+      <div class="step-card fade-up">
+        <div class="step-num">01</div>
+        <span class="step-icon">🔍</span>
+        <h3>On dresse l'état des lieux complet de votre IT</h3>
+        <p>On cartographie vos applications, votre infrastructure et vos contrats prestataires. Nous auditons votre exposition cyber et identifions vos forces et vos faiblesses. Livrable en 2 semaines. Aucun engagement au-delà.</p>
+      </div>
+      <div class="step-card fade-up delay-1">
+        <div class="step-num">02</div>
+        <span class="step-icon">🎯</span>
+        <h3>On définit vos priorités ensemble</h3>
+        <p>On dresse ensemble une liste de projets IT priorisés, couvrant vos applications métier, votre sécurité et votre infrastructure. Chaque projet est accompagné d'une estimation budgétaire et d'un planning d'exécution réaliste.</p>
+      </div>
+      <div class="step-card fade-up delay-2">
+        <div class="step-num">03</div>
+        <span class="step-icon">⚙️</span>
+        <h3>On prend le relais, vous gardez la main</h3>
+        <p>On exécute, on pilote vos prestataires et vous accompagnons dans leur sélection si besoin. Vous suivez tout en temps réel sur votre plateforme dédiée : applications, infrastructure, projets et budget IT.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFRES -->
+<section id="offres">
+  <div class="container">
+    <div class="section-tag fade-up">Nos offres</div>
+    <h2 class="section-title fade-up">L'expertise DSI,<br>au bon niveau.</h2>
+    <p class="section-sub fade-up">Trois formules pensées pour chaque étape de votre parcours.</p>
+    <div class="offers-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="offer-card fade-up">
+        <div class="offer-name">Diagnostic</div>
+        <div class="offer-desc">Le point de départ. On dresse un état des lieux complet de votre IT, sans engagement au-delà.</div>
+        <ul class="offer-features">
+          <li>Cartographie applicative et infrastructure</li>
+          <li>Revue de vos prestataires IT en place</li>
+          <li>Évaluation de votre maturité cyber</li>
+          <li>Identification des forces et faiblesses</li>
+          <li>Livrable complet en 2 semaines</li>
+        </ul>
+      </div>
+      <div class="offer-card featured fade-up delay-1">
+        <div class="offer-badge">Coeur de l'offre</div>
+        <div class="offer-name">Pilote</div>
+        <div class="offer-desc">Votre DSI du quotidien, en abonnement. On prend en charge votre IT sur la durée, à coût maîtrisé.</div>
+        <ul class="offer-features">
+          <li>Pilotage des projets IT courants</li>
+          <li>Pilotage de vos prestataires IT</li>
+          <li>Sélection et négociation prestataires</li>
+          <li>Roadmap IT priorisée sur 12 mois</li>
+          <li>Reporting mensuel et accès plateforme</li>
+          <li>Abonnement fixe, modulable selon vos besoins</li>
+        </ul>
+      </div>
+      <div class="offer-card fade-up delay-2">
+        <div class="offer-name">Transformation</div>
+        <div class="offer-desc">Nous vous accompagnons sur vos transformations majeures : ERP, CRM, mise en conformité cyber et bien d'autres.</div>
+        <ul class="offer-features">
+          <li>Cadrage et scoping du projet</li>
+          <li>Sélection et négociation des prestataires</li>
+          <li>Direction de projet et suivi des jalons</li>
+          <li>Gestion des risques et arbitrages</li>
+          <li>Restitution exécutive</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why">
+  <div class="container">
+    <div class="section-tag fade-up">Pourquoi EggH</div>
+    <h2 class="section-title fade-up">Ce qui change<br>tout.</h2>
+    <div class="why-grid">
+      <div class="why-card fade-up">
+        <div class="why-icon">⚡</div>
+        <h3>Opérationnel immédiatement</h3>
+        <p>Suite au diagnostic, un profil expérimenté et éprouvé prend en charge votre IT rapidement, avec les bons réflexes dès le premier jour.</p>
+      </div>
+      <div class="why-card fade-up delay-1">
+        <div class="why-icon">💻</div>
+        <h3>Une plateforme dédiée</h3>
+        <p>Accédez en temps réel à l'état de votre IT : cartographie applicative, parc infrastructure, prestataires, projets en cours et budget. Tout au même endroit, à tout moment.</p>
+      </div>
+      <div class="why-card fade-up delay-2">
+        <div class="why-icon">🔒</div>
+        <h3>Indépendant des éditeurs</h3>
+        <p>Aucun partenariat commercial avec des éditeurs ou intégrateurs. Nos recommandations sont 100% alignées sur vos intérêts.</p>
+      </div>
+      <div class="why-card fade-up delay-3">
+        <div class="why-icon">📈</div>
+        <h3>Modèle scalable</h3>
+        <p>Nous nous adaptons à vos besoins de transformation majeurs. Vos projets n'attendent pas. Nous non plus. Un coût transparent, au jour près.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION -->
+<section id="vision">
+  <div class="container">
+    <div class="vision-inner">
+      <div class="fade-up">
+        <div class="section-tag">Notre conviction</div>
+        <div class="vision-quote">Les PMEs méritent <em>la même qualité SI</em> que les grands groupes.</div>
+        <p class="vision-text">Trop longtemps, les ETIs et PMEs ont subi leur informatique faute de compétences internes. Elles subissent des prestataires qui font du volume, des projets qui dérapent, des coûts qui s'envolent.</p>
+        <p class="vision-text">EggH existe pour changer ça. En apportant une expertise DSI senior à des structures qui n'ont pas les moyens ou la taille pour recruter ce profil en interne.</p>
+        <p class="vision-text">On n'est pas une ESN. On n'est pas un cabinet de conseil. On est votre DSI, avec pour seul objectif de servir vos intérêts.</p>
+      </div>
+      <div class="carousel fade-up delay-2">
+        <div>
+          <div class="carousel-slide active">
+            <div class="carousel-quote">On gérait l'IT en mode pompier depuis des années. Aucune stratégie, que des urgences. Le sujet ERP traînait depuis deux ans sans avancer.</div>
+            <div class="carousel-author">
+              <div class="carousel-name">Témoignage anonymisé</div>
+              <div class="carousel-role">PDG, société de services, 90 salariés</div>
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <div class="carousel-quote">On avait accumulé des outils pendant 10 ans sans jamais faire le ménage. Personne ne savait vraiment ce qui tournait sur quoi, ni pourquoi.</div>
+            <div class="carousel-author">
+              <div class="carousel-name">Témoignage anonymisé</div>
+              <div class="carousel-role">DG, groupe familial, 200 salariés</div>
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <div class="carousel-quote">Chaque fin de trimestre, une mauvaise surprise sur la facture IT. J'avais arrêté de poser des questions parce que je ne comprenais pas les réponses.</div>
+            <div class="carousel-author">
+              <div class="carousel-name">Témoignage anonymisé</div>
+              <div class="carousel-role">CFO, ETI distribution, 280 salariés</div>
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <div class="carousel-quote">On a eu une tentative de ransomware. On ne savait même pas si nos sauvegardes étaient restaurables. Ça m'a coûté trois nuits blanches.</div>
+            <div class="carousel-author">
+              <div class="carousel-name">Témoignage anonymisé</div>
+              <div class="carousel-role">CFO, ETI logistique, 320 salariés</div>
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <div class="carousel-quote">Je passais plus de temps à arbitrer entre mes prestataires IT qu'à piloter mon business. Il me fallait quelqu'un qui prenne ça en main à ma place.</div>
+            <div class="carousel-author">
+              <div class="carousel-name">Témoignage anonymisé</div>
+              <div class="carousel-role">Directrice Générale, PME retail, 120 salariés</div>
+            </div>
+          </div>
+          <div class="carousel-slide">
+            <div class="carousel-quote">On m'a présenté un devis ERP à 400k€. Je n'avais aucun moyen de savoir si c'était justifié. J'ai signé. On a dérapé de huit mois et 150k€ supplémentaires.</div>
+            <div class="carousel-author">
+              <div class="carousel-name">Témoignage anonymisé</div>
+              <div class="carousel-role">PDG, ETI industrielle, 250 salariés</div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-controls">
+          <div class="carousel-dot active" data-index="0"></div>
+          <div class="carousel-dot" data-index="1"></div>
+          <div class="carousel-dot" data-index="2"></div>
+          <div class="carousel-dot" data-index="3"></div>
+          <div class="carousel-dot" data-index="4"></div>
+          <div class="carousel-dot" data-index="5"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="section-tag fade-up">FAQ</div>
+    <h2 class="section-title fade-up">Questions fréquentes.</h2>
+    <div class="faq-list fade-up">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">En quoi c'est différent d'une ESN ? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Une ESN vend des journées et place des profils chez vous. EggH prend une responsabilité sur votre IT en entier, comme un DSI interne le ferait, avec une vision stratégique et pas seulement une prestation d'exécution.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Quelle taille d'entreprise est concernée ? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Notre coeur de cible est les PMEs et ETIs entre 50 et 500 salariés, tous secteurs. Ces structures ont des enjeux IT réels mais n'ont pas vocation à internaliser une fonction DSI à temps plein.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Comment se passe le démarrage ? <span class="faq-icon">+</span></button>
+        <div class="faq-a">On démarre par un diagnostic IT complet en 2 semaines. On cartographie vos applications, votre infrastructure, vos prestataires et votre maturité cyber. Ce livrable vous appartient, quelle que soit la suite. Ensuite, si le fit est là, on formalise la mission.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Comment est structurée la facturation ? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Le Diagnostic est facturé au forfait. Le Pilote est un abonnement mensuel fixe, modulable selon vos besoins. La Transformation est facturée au forfait avec jalons. Pas d'engagement longue durée sur le Pilote.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Avons-nous accès à la plateforme dès le début ? <span class="faq-icon">+</span></button>
+        <div class="faq-a">Dès le Diagnostic, vous accédez à la plateforme pour suivre l'avancement et consulter les livrables. Les fonctionnalités complètes -- suivi en temps réel de votre infrastructure, prestataires, projets et budget IT -- sont disponibles à partir de l'offre Pilote ou Transformation.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact">
+  <div class="container">
+    <div class="cta-box fade-up">
+      <h2>Votre SI mérite mieux.</h2>
+      <p>Un échange de 30 minutes pour savoir si EggH est fait pour vous.</p>
+      <a href="https://calendly.com/eggh" class="btn btn-primary" style="font-size:16px; padding:14px 32px;">Prendre rendez-vous ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="logo" style="font-size:18px">Egg<span>H</span></div>
+    <p>© 2026 EggH. France.</p>
+  </div>
+</footer>
+
+<script>
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+</script>
+
+<script>
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => {
+    el.classList.add('hidden');
+    observer.observe(el);
+  });
+
+  // FAQ toggle -- handled by inline toggleFaq above
+
+  // Carousel
+  (function() {
+    let current = 0;
+    const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+    const dots = Array.from(document.querySelectorAll('.carousel-dot'));
+    if (!slides.length) return;
+
+    function goTo(n) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = ((n % slides.length) + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+    }
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+    setInterval(() => goTo(current + 1), 4500);
+  })();
