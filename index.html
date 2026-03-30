@@ -635,7 +635,7 @@
 
   .faq-list {
     margin-top: 60px;
-    max-width: 720px;
+    max-width: 100%;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
@@ -1082,9 +1082,9 @@
 
   // Carousel
   (function() {
-    let current = 0;
-    const slides = Array.from(document.querySelectorAll('.carousel-slide'));
-    const dots = Array.from(document.querySelectorAll('.carousel-dot'));
+    var current = 0;
+    var slides = document.querySelectorAll('.carousel-slide');
+    var dots = document.querySelectorAll('.carousel-dot');
     if (!slides.length) return;
 
     function goTo(n) {
@@ -1095,6 +1095,11 @@
       dots[current].classList.add('active');
     }
 
-    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
-    setInterval(() => goTo(current + 1), 4500);
+    for (var i = 0; i < dots.length; i++) {
+      (function(idx) {
+        dots[idx].addEventListener('click', function() { goTo(idx); });
+      })(i);
+    }
+
+    setInterval(function() { goTo(current + 1); }, 4500);
   })();
