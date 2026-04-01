@@ -301,6 +301,16 @@
   }
 
   .hero > .container { position: relative; z-index: 2; }
+  .hero-content-wrap {
+    background: rgba(10,10,10,0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 56px 48px;
+    max-width: 740px;
+    margin: 0 auto;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
 
   .hero-glow {
     position: absolute;
@@ -726,79 +736,79 @@
     margin-bottom: 16px;
   }
 
-  /* ── TERRAIN CARDS ── */
-  .terrain-header {
+  /* ── ÉTUDES ROW ── */
+  .etudes-intro {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .etudes-intro .section-tag { margin-bottom: 0; }
+
+  .etudes-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .etude-item {
+    flex: 1;
+    text-align: center;
+    padding: 0 32px;
+  }
+
+  .etude-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(44px, 5.5vw, 72px);
+    font-weight: 400;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 16px;
+    letter-spacing: -2px;
+  }
+
+  .etude-text {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .etude-sep {
+    width: 1px;
+    align-self: stretch;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  /* ── CONVICTION QUOTE ── */
+  .conviction-block {
+    margin-top: 72px;
     display: flex;
     align-items: center;
-    gap: 20px;
-    margin-bottom: 40px;
+    gap: 32px;
   }
-  .terrain-header-line {
+
+  .conviction-line {
     flex: 1;
     height: 1px;
     background: var(--border);
   }
-  .terrain-header-text {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-  }
 
-  .terrain-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
-
-  .terrain-card {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 32px 28px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
-  }
-  .terrain-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, rgba(212,201,184,0.5), rgba(140,163,184,0.3));
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .terrain-card:hover {
-    border-color: rgba(212,201,184,0.2);
-    transform: translateY(-3px);
-  }
-  .terrain-card:hover::before { opacity: 1; }
-
-  .terrain-stat {
+  .conviction-quote {
     font-family: 'DM Serif Display', serif;
-    font-size: clamp(36px, 4vw, 48px);
+    font-size: clamp(18px, 2.2vw, 24px);
     font-weight: 400;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 8px;
-    letter-spacing: -1px;
-  }
-
-  .terrain-label {
-    font-size: 14px;
-    font-weight: 700;
     color: var(--text);
-    line-height: 1.35;
-    margin-bottom: 14px;
+    line-height: 1.45;
+    text-align: center;
+    max-width: 700px;
+    letter-spacing: -0.3px;
+    margin: 0;
+    padding: 0;
+    border: none;
   }
-
-  .terrain-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.7;
+  .conviction-quote em {
+    color: var(--accent);
+    font-style: italic;
   }
 
   /* ── FAQ ── */
@@ -958,14 +968,15 @@
     .steps-grid { grid-template-columns: 1fr; }
     .why-grid { grid-template-columns: 1fr; }
     .offers-grid { grid-template-columns: 1fr; }
-    .terrain-grid { grid-template-columns: repeat(2, 1fr); }
+    .etudes-row { flex-direction: column; gap: 40px; } .etude-sep { width: 100%; height: 1px; align-self: auto; }
     .hero-stats { flex-direction: column; gap: 24px; }
     .cta-box { padding: 48px 28px; }
     .trust-strip { gap: 16px; padding: 24px 0; }
     section { padding: 72px 0; }
     .hero { padding: 120px 0 60px; }
+    .hero-content-wrap { padding: 36px 24px; }
     .hero h1 { letter-spacing: -1.5px; }
-    .terrain-card { padding: 24px 20px; }
+    .etude-item { padding: 0 16px; }
     #sticky-cta { bottom: 16px; right: 16px; }
     .offer-header { flex-direction: column; gap: 4px; }
     .offer-tag { text-align: left; }
@@ -975,7 +986,7 @@
     .hero-ctas { flex-direction: column; align-items: stretch; }
     .hero-ctas .btn { justify-content: center; }
     .hero-badge { font-size: 11px; }
-    .terrain-grid { grid-template-columns: 1fr; }
+    .conviction-block { flex-direction: column; gap: 20px; }
   }
 </style>
 </head>
@@ -1026,14 +1037,16 @@
   <div class="hero-glow"></div>
   <div class="hero-glow2"></div>
   <div class="container">
-    <div class="hero-badge fade-up"><span class="dot" aria-hidden="true"></span> DSI as a Service pour PMEs &amp; ETIs</div>
-    <h1 class="fade-up delay-1">Votre IT, enfin<br/><em>sous contrôle.</em></h1>
-    <p class="hero-sub fade-up delay-2">Vous avez bâti une entreprise qui fonctionne. Votre IT, lui, freine : coûts flous, prestataires incontrôlés, risques invisibles. C'est exactement pour ça qu'on existe.</p>
-    <div class="hero-ctas fade-up delay-3">
+    <div class="hero-content-wrap">
+    <div class="hero-badge fade-up" style="margin-left:auto;margin-right:auto;"><span class="dot" aria-hidden="true"></span> DSI as a Service pour PMEs &amp; ETIs</div>
+    <h1 class="fade-up delay-1" style="text-align:center;margin-left:auto;margin-right:auto;">Votre IT, enfin<br/><em>sous contrôle.</em></h1>
+    <p class="hero-sub fade-up delay-2" style="text-align:center;margin-left:auto;margin-right:auto;">Vous avez bâti une entreprise qui fonctionne. Votre IT, lui, vous freine : coûts flous, prestataires incontrôlés, risques invisibles. C'est exactement pour ça qu'on existe.</p>
+    <div class="hero-ctas fade-up delay-3" style="justify-content:center;">
       <a href="https://calendly.com/eggh" target="_blank" rel="noopener" class="btn btn-primary">Réserver un appel ↗</a>
       <a href="#how" class="btn btn-outline">Découvrir l'approche</a>
     </div>
-    <div class="hero-stats fade-up delay-4">
+    </div>
+    <div class="hero-stats fade-up delay-4" style="justify-content:center;">
       <div>
         <div class="stat-num">Zéro<span> angle mort</span></div>
         <div class="stat-label">Sur vos coûts, vos risques, vos prestataires</div>
@@ -1050,42 +1063,37 @@
   </div>
 </section>
 
-<!-- CE QU'ON VOIT SUR LE TERRAIN + CONVICTION -->
+<!-- CE QUE DISENT LES ÉTUDES + CONVICTION -->
 <section id="vision">
   <div class="container">
-    <div class="terrain-header fade-up">
-      <span class="terrain-header-line"></span>
-      <span class="terrain-header-text">Ce que disent les études</span>
-      <span class="terrain-header-line"></span>
+    <div class="etudes-intro fade-up">
+      <div class="section-tag" style="justify-content:center;">Ce que disent les études</div>
     </div>
-    <div class="terrain-grid fade-up">
-      <div class="terrain-card">
-        <div class="terrain-stat">56%</div>
-        <div class="terrain-label">du budget IT des PME part en résolution de problèmes</div>
-        <p class="terrain-desc">Plus de la moitié des dépenses IT sert à éteindre des incendies. Pas à faire avancer le business. Votre IT vous coûte au lieu de vous rapporter.</p>
+    <div class="etudes-row fade-up">
+      <div class="etude-item">
+        <div class="etude-num">56%</div>
+        <div class="etude-text">du budget IT des PME<br/>consacré à éteindre des incendies</div>
       </div>
-      <div class="terrain-card">
-        <div class="terrain-stat">3 sur 4</div>
-        <div class="terrain-label">projets ERP dépassent le budget prévu</div>
-        <p class="terrain-desc">En moyenne, les projets IT coûtent 189% de l'estimation initiale. Pour un grand groupe, c'est un incident de parcours. Pour une PME, c'est la trésorerie qui est mise à risque.</p>
+      <div class="etude-sep"></div>
+      <div class="etude-item">
+        <div class="etude-num">3/4</div>
+        <div class="etude-text">des projets ERP<br/>dépassent le budget prévu</div>
       </div>
-      <div class="terrain-card">
-        <div class="terrain-stat">48%</div>
-        <div class="terrain-label">des victimes de ransomware sont des PME et ETI</div>
-        <p class="terrain-desc">Le risque de défaillance augmente de 50% dans les 6 mois qui suivent une attaque. Vous êtes dans le viseur.</p>
+      <div class="etude-sep"></div>
+      <div class="etude-item">
+        <div class="etude-num">48%</div>
+        <div class="etude-text">des victimes de ransomware<br/>sont des PME et ETI</div>
       </div>
-      <div class="terrain-card">
-        <div class="terrain-stat">3 sur 4</div>
-        <div class="terrain-label">PME et ETI insatisfaites de leur prestataire IT</div>
-        <p class="terrain-desc">Pas de pilotage, pas de contre-pouvoir, pas d'alternative. La relation est subie. Et la facture monte.</p>
+      <div class="etude-sep"></div>
+      <div class="etude-item">
+        <div class="etude-num">3/4</div>
+        <div class="etude-text">des PME et ETI insatisfaites<br/>de leur prestataire IT</div>
       </div>
     </div>
-    <div class="fade-up" style="max-width:680px;margin-top:72px;">
-      <div class="section-tag">Notre conviction</div>
-      <div class="vision-quote">Les PMEs méritent <em>la même qualité SI</em> que les grands groupes.</div>
-      <p class="vision-text">Trop longtemps, les ETIs et PMEs ont subi leur informatique faute de compétences internes. Elles subissent des prestataires qui font du volume, des projets qui dérapent, des coûts qui s'envolent.</p>
-      <p class="vision-text">Vegapoint existe pour changer ça. En apportant une expertise DSI senior à des structures qui n'ont pas les moyens ou la taille pour recruter ce profil en interne.</p>
-      <p class="vision-text" style="color:var(--text);font-weight:500;">On n'est pas une ESN. On n'est pas un cabinet de conseil. On est votre DSI, avec pour seul objectif de servir vos intérêts.</p>
+    <div class="conviction-block fade-up">
+      <div class="conviction-line"></div>
+      <blockquote class="conviction-quote">Les PMEs méritent <em>la même qualité SI</em> que les grands groupes. On n’est pas une ESN. On n’est pas un cabinet de conseil. <em>On est votre DSI, avec pour seul objectif de servir vos intérêts.</em></blockquote>
+      <div class="conviction-line"></div>
     </div>
   </div>
 </section>
@@ -1187,8 +1195,8 @@
     <div class="why-grid">
       <article class="why-card fade-up">
         <div class="why-icon" aria-hidden="true">⚡</div>
-        <h3>Opérationnel dès le premier mois</h3>
-        <p>Suite à l'Audit IT, un profil DSI senior prend en charge votre IT rapidement. On arrive avec votre diagnostic déjà en main.</p>
+        <h3>Une expertise éprouvée</h3>
+        <p>Un Audit IT structuré et des recommandations ciblées, portés par une expérience forgée auprès de directions générales de grands groupes et de fonds d'investissement.</p>
       </article>
       <article class="why-card fade-up delay-1">
         <div class="why-icon" aria-hidden="true">💻</div>
