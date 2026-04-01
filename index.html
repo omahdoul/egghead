@@ -129,14 +129,14 @@
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 100;
-    padding: 18px 0;
-    background: rgba(8,8,8,0.82);
+    padding: 14px 0;
+    background: rgba(8,8,8,0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border);
-    transition: padding 0.3s var(--ease), background 0.3s;
+    transition: background 0.3s var(--ease);
   }
-  nav.scrolled { padding: 12px 0; background: rgba(8,8,8,0.95); }
+  nav.scrolled { background: rgba(8,8,8,0.95); }
 
   .nav-inner {
     max-width: 1280px;
@@ -148,8 +148,7 @@
   }
 
   .logo-link { display: flex; align-items: center; }
-  .logo-link img { height: 72px; width: auto; transition: height 0.3s var(--ease); }
-  nav.scrolled .logo-link img { height: 56px; }
+  .logo-link img { height: 40px; width: auto; }
 
   .nav-links {
     display: flex;
@@ -968,8 +967,6 @@
     .hero h1 { letter-spacing: -1.5px; }
     .terrain-card { padding: 24px 20px; }
     #sticky-cta { bottom: 16px; right: 16px; }
-    .logo-link img { height: 56px; }
-    nav.scrolled .logo-link img { height: 44px; }
     .offer-header { flex-direction: column; gap: 4px; }
     .offer-tag { text-align: left; }
   }
