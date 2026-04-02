@@ -791,6 +791,13 @@
     line-height: 1.5;
   }
 
+  .etude-source {
+    margin-top: 12px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    font-style: italic;
+  }
+
   .etude-sep {
     width: 1px;
     align-self: stretch;
@@ -979,33 +986,50 @@
   }
 
   @media (max-width: 768px) {
-    .container { padding: 0 24px; }
-    .nav-inner { padding: 0 24px; }
-    .footer-inner { padding: 0 24px; }
+    .container { padding: 0 20px; }
+    .nav-inner { padding: 0 20px; }
+    .footer-inner { padding: 0 20px; }
+    nav { height: 72px; }
+    .logo-link img { height: 52px; }
     .nav-links { display: none; }
     .hamburger { display: flex; }
     .steps-grid { grid-template-columns: 1fr; }
     .why-grid { grid-template-columns: 1fr; }
     .offers-grid { grid-template-columns: 1fr; }
-    .etudes-row { flex-direction: column; gap: 40px; } .etude-sep { width: 100%; height: 1px; align-self: auto; }
+    .etudes-row { flex-direction: column; gap: 32px; align-items: center; }
+    .etude-sep { width: 40%; height: 1px; align-self: center; }
+    .etude-item { text-align: center; width: 100%; padding: 0; }
+    .etude-num { font-size: 48px; }
     .hero-stats { flex-direction: column; gap: 24px; }
-    .cta-box { padding: 48px 28px; }
+    .cta-box { padding: 48px 24px; }
     .trust-strip { gap: 16px; padding: 24px 0; }
-    section { padding: 72px 0; }
-    .hero { padding: 120px 0 60px; }
-    .hero-content-wrap { padding: 36px 24px; }
+    section { padding: 64px 0; }
+    .hero { padding: 100px 0 48px; }
+    .hero-content-wrap { padding: 32px 20px; }
     .hero h1 { letter-spacing: -1.5px; }
-    .etude-item { padding: 0 16px; }
+    .conviction-block { gap: 20px; }
+    .conviction-quote { font-size: 17px; }
     #sticky-cta { bottom: 16px; right: 16px; }
     .offer-header { flex-direction: column; gap: 4px; }
     .offer-tag { text-align: left; }
+    .section-title { font-size: 28px; letter-spacing: -1px; }
+    .section-tag { font-size: 10px; }
   }
 
   @media (max-width: 480px) {
     .hero-ctas { flex-direction: column; align-items: stretch; }
     .hero-ctas .btn { justify-content: center; }
-    .hero-badge { font-size: 11px; }
-    .conviction-block { flex-direction: column; gap: 20px; }
+    .hero-badge { font-size: 11px; padding: 5px 12px; }
+    .conviction-block { flex-direction: column; gap: 16px; }
+    .conviction-quote { font-size: 15px; }
+    .etude-num { font-size: 40px; }
+    .etude-text { font-size: 13px; }
+    .hero-content-wrap { padding: 28px 16px; }
+    .stat-num { font-size: 24px; }
+    .stat-label { font-size: 12px; }
+    nav { height: 64px; }
+    .logo-link img { height: 44px; }
+    .btn-nav { font-size: 12px; padding: 6px 14px; }
   }
 </style>
 </head>
@@ -1049,7 +1073,7 @@
 
 <!-- HERO -->
 <section class="hero" id="main-content">
-  <video class="hero-video" autoplay muted playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%230a0a0a'/%3E%3C/svg%3E">
+  <video class="hero-video" autoplay muted loop playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%230a0a0a'/%3E%3C/svg%3E">
     <source src="hero.mp4" type="video/mp4"/>
   </video>
   <div class="hero-overlay"></div>
@@ -1090,25 +1114,30 @@
     </div>
     <div class="etudes-row fade-up">
       <div class="etude-item">
-        <div class="etude-num">56%</div>
-        <div class="etude-text">du budget IT des PME<br/>consacré à éteindre des incendies</div>
+        <div class="etude-num">78%</div>
+        <div class="etude-text">des dirigeants de TPE/PME estiment que le<br/>numérique apporte un bénéfice réel</div>
+        <div class="etude-source">France Num</div>
       </div>
       <div class="etude-sep"></div>
       <div class="etude-item">
-        <div class="etude-num">3/4</div>
-        <div class="etude-text">des projets ERP<br/>dépassent le budget prévu</div>
+        <div class="etude-num">27%</div>
+        <div class="etude-text">des dirigeants de PME/ETI estiment que leur<br/>entreprise est avancée ou leader sur le plan digital</div>
+        <div class="etude-source">implid / Entreprise DU FUTUR</div>
       </div>
       <div class="etude-sep"></div>
       <div class="etude-item">
-        <div class="etude-num">48%</div>
-        <div class="etude-text">des victimes de ransomware<br/>sont des PME et ETI</div>
+        <div class="etude-num">45%</div>
+        <div class="etude-text">des TPE/PME ne disposent pas de<br/>compétences numériques en interne</div>
+        <div class="etude-source">France Num</div>
       </div>
       <div class="etude-sep"></div>
       <div class="etude-item">
-        <div class="etude-num">3/4</div>
-        <div class="etude-text">des PME et ETI sont insatisfaites<br/>de leur prestataire IT</div>
+        <div class="etude-num">52%</div>
+        <div class="etude-text">des dirigeants de TPE/PME craignent la perte<br/>ou le piratage de leurs données</div>
+        <div class="etude-source">France Num</div>
       </div>
     </div>
+
     <div class="conviction-block fade-up">
       <div class="conviction-line"></div>
       <blockquote class="conviction-quote">Les PMEs méritent <em>la même qualité SI</em> que les grands groupes. On n’est pas une ESN. On n’est pas un cabinet de conseil. <em>On est votre DSI, avec pour seul objectif de servir vos intérêts.</em></blockquote>
@@ -1391,29 +1420,5 @@
   })();
 </script>
 
-<script>
-  // ── VIDEO PING-PONG LOOP ──
-  (function() {
-    var video = document.querySelector('.hero-video');
-    if (!video) return;
-    var reversing = false;
-    var rafId;
-
-    video.addEventListener('ended', function() {
-      reversing = true;
-      function stepBack() {
-        if (video.currentTime <= 0.1) {
-          video.currentTime = 0;
-          reversing = false;
-          video.play();
-          return;
-        }
-        video.currentTime -= 0.06;
-        rafId = requestAnimationFrame(stepBack);
-      }
-      stepBack();
-    });
-  })();
-</script>
 </body>
 </html>
