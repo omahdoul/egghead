@@ -1049,7 +1049,7 @@
 
 <!-- HERO -->
 <section class="hero" id="main-content">
-  <video class="hero-video" autoplay muted loop playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%230a0a0a'/%3E%3C/svg%3E">
+  <video class="hero-video" autoplay muted playsinline poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3Crect fill='%230a0a0a'/%3E%3C/svg%3E">
     <source src="hero.mp4" type="video/mp4"/>
   </video>
   <div class="hero-overlay"></div>
@@ -1106,7 +1106,7 @@
       <div class="etude-sep"></div>
       <div class="etude-item">
         <div class="etude-num">3/4</div>
-        <div class="etude-text">des PME et ETI insatisfaites<br/>de leur prestataire IT</div>
+        <div class="etude-text">des PME et ETI sont insatisfaites<br/>de leur prestataire IT</div>
       </div>
     </div>
     <div class="conviction-block fade-up">
@@ -1387,6 +1387,31 @@
     document.querySelectorAll('.fade-up').forEach(function(el) {
       el.classList.add('hidden');
       io.observe(el);
+    });
+  })();
+</script>
+
+<script>
+  // ── VIDEO PING-PONG LOOP ──
+  (function() {
+    var video = document.querySelector('.hero-video');
+    if (!video) return;
+    var reversing = false;
+    var rafId;
+
+    video.addEventListener('ended', function() {
+      reversing = true;
+      function stepBack() {
+        if (video.currentTime <= 0.1) {
+          video.currentTime = 0;
+          reversing = false;
+          video.play();
+          return;
+        }
+        video.currentTime -= 0.06;
+        rafId = requestAnimationFrame(stepBack);
+      }
+      stepBack();
     });
   })();
 </script>
